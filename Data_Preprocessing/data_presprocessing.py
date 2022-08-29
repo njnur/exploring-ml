@@ -3,7 +3,7 @@ Created on Thu Jul  9 12:24:05 2020
 @author: Nur
 """
 import pandas as pd
-import numpy as np
+import Numpy as np
 from sklearn.impute import SimpleImputer
 from sklearn.preprocessing import LabelEncoder, OneHotEncoder, StandardScaler
 from sklearn.compose import ColumnTransformer
