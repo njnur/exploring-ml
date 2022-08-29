@@ -26,7 +26,11 @@ for un_lis in unordered_li:
         except IndexError:
             content = main_cats.contents[0]
         main_cat_name = content.text.strip()
-        main_cat_uri = content.get('href')
+
+        try:
+            main_cat_uri = content.contents[1].get('href')
+        except IndexError:
+            main_cat_uri = content.get('href')
 
         # get sub-categories from main category
         sub_cat = main_cats.select('div > ul > li')
