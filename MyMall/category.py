@@ -1,5 +1,5 @@
+import re
 import requests
-import psycopg2
 import pandas as pd
 
 from bs4 import BeautifulSoup
@@ -47,6 +47,32 @@ for un_lis in unordered_li:
                 'sub_category_url': sub_cat_uri
             })
 
-    # add data into panda dataframe
-    df = pd.DataFrame(data=data, columns=['mega_category', 'main_category', 'sub_category',
+# add data into panda dataframe
+cat_df = pd.DataFrame(data=data, columns=['mega_category', 'main_category', 'sub_category',
                                           'mega_category_url', 'main_category_url', 'sub_category_url'])
+
+
+# traverse each sub-category and fetch all the product's price, name, and images
+noisy_str = re.compile("[^\d\.]")
+product_info = []
+
+for _, sub_cat_urls in cat_df['sub_category_url'].iteritems():
+    uri_response = requests.get(url=sub_cat_urls).content
+    bs_obj = BeautifulSoup(markup=uri_response, parser='html.parser', features='lxml')
+
+    unordered_product = bs_obj.select('div.product-item')
+    for unordered_products in unordered_product:
+        if hasattr(unordered_products, 'contents'):
+            try:
+                product_info.append({
+                    'product_name': unordered_products.contents[1].text.strip(),
+                    'product_price': float(noisy_str.sub(r'', unordered_products.contents[2].text)),
+                    'image_url': unordered_products.contents[0].find('a', href=True).get('href'),
+                    'sub_category_url': sub_cat_urls
+                })
+            except (IndexError, ValueError):
+                pass
+
+# add data into panda dataframe
+prod_df = pd.DataFrame(data=product_info,
+                       columns=['product_name', 'product_price', 'image_url', 'sub_category_url'])
