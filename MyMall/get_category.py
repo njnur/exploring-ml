@@ -5,10 +5,10 @@ import pandas as pd
 from bs4 import BeautifulSoup
 
 
-MYMALL_MEGA_CAT_URI = "https://mymall.se/media/mymall/megamenu/9826648.html"
+MENU_URI = "https://mymall.se/media/mymall/megamenu/9826648.html"
 
 data = []
-uri_response = requests.get(url=MYMALL_MEGA_CAT_URI).content
+uri_response = requests.get(url=MENU_URI).content
 bs_obj = BeautifulSoup(markup=uri_response, parser='html.parser', features='lxml')
 
 unordered_li = bs_obj.select('body > li')
