@@ -56,7 +56,7 @@ cat_df = pd.DataFrame(data=data, columns=['mega_category', 'main_category', 'sub
 noisy_str = re.compile("[^\d\.]")
 product_info = []
 
-for _, sub_cat_urls in cat_df['sub_category_url'].iteritems():
+for index, sub_cat_urls in cat_df['sub_category_url'].iteritems():
     uri_response = requests.get(url=sub_cat_urls).content
     bs_obj = BeautifulSoup(markup=uri_response, parser='html.parser', features='lxml')
 
@@ -68,7 +68,12 @@ for _, sub_cat_urls in cat_df['sub_category_url'].iteritems():
                     'product_name': unordered_products.contents[1].text.strip(),
                     'product_price': float(noisy_str.sub(r'', unordered_products.contents[2].text)),
                     'image_url': unordered_products.contents[0].find('a', href=True).get('href'),
-                    'sub_category_url': sub_cat_urls
+                    'mega_category': cat_df.at[index, 'mega_category'],
+                    'main_category': cat_df.at[index, 'main_category'],
+                    'sub_category': cat_df.at[index, 'sub_category'],
+                    'mega_category_url': cat_df.at[index, 'mega_category_url'],
+                    'main_category_url': cat_df.at[index, 'main_category_url'],
+                    'sub_category_url': sub_cat_urls,
                 })
             except (IndexError, ValueError):
                 pass

@@ -12,6 +12,7 @@ dash = "^2.6.1"
 jupyter-dash = "^0.4.2"
 beautifulsoup4 = "^4.11.1"
 psycopg2 = "^2.9.3"
+SQLAlchemy = "^1.4.40"
 
 [tool.poetry.dev-dependencies]
 
